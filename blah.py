@@ -1,23 +1,16 @@
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
+import random
+img = Image.new('RGBA', (6000, 6000), color='white')
+from dotenv import load_dotenv
+import tweepy
+import os
+import io
 import sys
 import numpy as np
 from PIL import Image
 import matplotlib.pylab as plt
 import matplotlib.colors as mclr
-import os
-from dotenv import load_dotenv
-import tweepy
-np.set_printoptions(linewidth=200, precision=3)
-import base64
-import io
-from io import BytesIO
-c_k = os.getenv("API_key")
-c_s = os.getenv("API_secret_key")
-a_k = os.getenv("Access_token")
-a_s = os.getenv("access_token_secret")
-auth = tweepy.OAuthHandler(c_k, c_s)
-auth.set_access_token(a_k, a_s)
-api = tweepy.API(auth)
-# str = base64.b64encode(imageFile.read())
+from random import randint
 
 def draw_pastell(nx=900, ny=1600, CL=180, rshift=3):
     nz=3
@@ -41,21 +34,34 @@ def draw_pastell(nx=900, ny=1600, CL=180, rshift=3):
         A[ix,jy,iz] = 0.3333*(A[ixm,jy-1,iz] + A[ix,jy-1,iz] + A[ixp,jy-1,iz]) + np.random.randint(-rshift, rshift+1, size=(nx-2,nz))
 
     #---- show&save grafics ---------
-    im = Image.fromarray(A.astype(np.uint8)).convert('RGBA')
-    fig, ax = plt.subplots(figsize=(20,14));
-    fileName = 'pic_pastell_B_{}_{}.png'.format(CL,rshift)
-    im.save(fileName)
-    stri = base64.b64encode(im.tobytes())
-    plt.axis('off')
-    plt.imshow(im)
+    im1 = Image.fromarray(A.astype(np.uint8)).convert('RGBA')
+    im1 = im1.filter(ImageFilter.CONTOUR)
+    im1 = im1.filter(ImageFilter.EMBOSS)
+    for i in range(randint(0, 500)):
+        im1 = im1.filter(ImageFilter.BLUR)
+    for i in range(randint(0, 500)):
+        im1 = im1.filter(ImageFilter.EDGE_ENHANCE_MORE)
+    for i in range(randint(0, 500)):
+        im1 = im1.filter(ImageFilter.CONTOUR)
+    for i in range(randint(0, 500)):
+        im1 = im1.filter(ImageFilter.EDGE_ENHANCE_MORE)
+    for i in range(randint(0, 500)):
+        im1 = im1.filter(ImageFilter.BLUR)
+    for i in range(randint(0, 1000)):
+        im1 = im1.filter(ImageFilter.EDGE_ENHANCE_MORE)
+
+    c_k = os.getenv("API_key")
+    c_s = os.getenv("API_secret_key")
+    a_k = os.getenv("Access_token")
+    a_s = os.getenv("access_token_secret")
+    auth = tweepy.OAuthHandler(c_k, c_s)
+    auth.set_access_token(a_k, a_s)
+    api = tweepy.API(auth)
+
     buf = io.BytesIO()
-    im.save(buf, format='PNG')
+    im1.save(buf, format='PNG')
     thing = buf.getvalue()
     test = api.media_upload('28.png',file= buf)
-    api.update_status(status='many images!✨', media_ids=[test.media_id])
+    api.update_status(status='', media_ids=[test.media_id])
 
-
-   # nx, ny :   size of image (x,y)
-   # CL     :   color level
-   # rshift :   spread of random numbers
 draw_pastell(nx=900, ny=1600, CL=181, rshift=3)
