@@ -39,14 +39,15 @@ def draw_pastell(nx=900, ny=1600, CL=180, rshift=3):
 
     #---- show&save grafics ---------
     im1 = Image.fromarray(A.astype(np.uint8)).convert('RGBA')
-    im1 = im1.filter(ImageFilter.CONTOUR)
-    im1 = im1.filter(ImageFilter.EMBOSS)
     draw1 = ImageDraw.Draw(im1, "RGBA")
     r = random.randint(0,255)
     g = random.randint(0,255)
     b = random.randint(0,255)
     for i in range(randint(0, 10)):
         draw1.rectangle(((randint(0, 6000), randint(0, 6000)), (randint(0, 100), randint(0, 100))), fill= tuple(np.random.randint(256, size=3)) + (60,))
+    im1 = im1.filter(ImageFilter.CONTOUR)
+    im1 = im1.filter(ImageFilter.EMBOSS)
+
     for i in range(randint(0, 500)):
         im1 = im1.filter(ImageFilter.BLUR)
     for i in range(randint(0, 500)):
