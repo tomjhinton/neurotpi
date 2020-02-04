@@ -75,6 +75,6 @@ def draw_pastell(nx=900, ny=1600, CL=180, rshift=3):
     im1.save(buf, format='PNG')
     thing = buf.getvalue()
     test = api.media_upload('28.png',file= buf)
-    api.update_status(status='', media_ids=[test.media_id])
+    api.update_status(status='#creativecoding #codeart #generativeart #computerart #glitchart', media_ids=[test.media_id])
 
 draw_pastell(nx=900, ny=1600, CL=181, rshift=3)
